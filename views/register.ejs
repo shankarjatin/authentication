@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/style.css"></head>
 <body>
       <hi style="color: rgb(34, 3, 3);"><%= title %></h1>
-    <hi style="color: rgb(65, 211, 7);"> </h1>
+    <hi style="color: rgb(65, 211, 7);"><%= password %></h1>
     <hi style="color:rgb(255, 0, 200);"> </h1>
             
     <div class="main">  
@@ -18,7 +18,7 @@
 			<div class="signup">
 				<form action="/signup" method="post">
 					<label for="chk" aria-hidden="true">Sign up</label>
-					<input type="text" name="txt" placeholder="User name" required="">
+					<input type="text" name="uname" placeholder="User name" required="">
 					<input type="email" name="email" placeholder="Email" required="">
 					<input type="password" name="password" placeholder="Password" required="">
                     <input type="password" name="cpassword" placeholder="Confirm Password" required="">
