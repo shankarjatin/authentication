@@ -1,6 +1,6 @@
 const express = require("express");
 const Router  = express.Router();
-
+const HomeSchema = require("../models/homeSchema");
 Router.get("/", (req,res)=>{
 res.render("register",{title:"fill form",password:"",email:""})})
 
@@ -11,9 +11,21 @@ try{
         email,
         password,
         cpassword
-    }= req.body;
+    }=req.body;
     if(password===cpassword){
-        console.log("okay")
+       const  userData = new HomeSchema({
+        uname,
+        email,
+        password,
+       })
+       userData.save( err=>{
+        if(err){
+            console.log(err)
+        }else{
+            res.render("register",{title:"Done",password:"",email:""})
+
+        }
+       })
     }
     else{
         res.render("register",{title:"",password:"password not matching",email:""})

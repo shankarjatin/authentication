@@ -11,16 +11,16 @@ const userSchema = new schema({
         unique:true,
         required:true
     },
-    name:{
-        type:String,
-        required:true
-    },
+    // name:{
+    //     type:String,
+    //     required:true
+    // },
     password:{
         type:String,
         required:true
     },
 });
-const Userinfo = new mongoose.model('Registeruser', userSchema);
+const Userinfo = new mongoose.model('Userinfo', userSchema);
 
 module.exports = Userinfo;
 
