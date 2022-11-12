@@ -9,7 +9,7 @@
 <body>
       <hi style="color: rgb(34, 3, 3);"><%= title %></h1>
     <hi style="color: rgb(65, 211, 7);"><%= password %></h1>
-    <hi style="color:rgb(255, 0, 200);"> </h1>
+    <hi style="color:rgb(255, 0, 200);"><%= email %> </h1>
             
     <div class="main">  
         <input type="checkbox" id="chk" aria-hidden="true">	
@@ -27,7 +27,7 @@
 			</div>
 
 			<div class="login">
-				<form action="/signin" method="post">
+				<form action="/login" method="post">
 					<label for="chk" aria-hidden="true">Login</label>
 					<input type="email" name="email" placeholder="Email" required="">
 					<input type="password" name="pswd" placeholder="Password" required="">
