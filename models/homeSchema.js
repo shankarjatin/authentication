@@ -11,6 +11,10 @@ const userSchema = new schema({
         unique:true,
         required:true
     },
+    nickname:{
+        type:String,
+        required:false
+    },
     // name:{
     //     type:String,
     //     required:true
@@ -18,7 +22,7 @@ const userSchema = new schema({
     password:{
         type:String,
         required:true
-    },
+    }
 });
 const Userinfo = new mongoose.model('Userinfo', userSchema);
 
