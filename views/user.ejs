@@ -8,10 +8,12 @@
 </head>
 <body>
    <h1><%= name %>  </h1>
-   
+   <h2><%= email %></h2>
    <form action="/login/user" method="post">
+      
+    <input type="hidden" name="email" id="email" value="<%= email%>" placeholder="enternickname" required="">
     <input type="text" name="nickname" id="nickname" placeholder="enternickname" required="">
-    <input type="text" name="nickname2" id="nickname" placeholder="enternickname" required="">
+    <!-- <input type="text" name="nickname2" id="nickname" placeholder="enternickname" required=""> -->
  <button>submit</button>
    </form>
 

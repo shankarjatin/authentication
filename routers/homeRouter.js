@@ -13,71 +13,101 @@ const mailgun = require("mailgun-js");
 const bodyParser = require("body-parser");
 const DOMAIN = 'sandboxf5f766617900462a9ccd109ead7478d2.mailgun.org';
 const mg = mailgun({apiKey: "7e35b47bab804aaee3ad19a962c5a811-48c092ba-71d0e176", domain: DOMAIN });
-
+const JWT_SECRET ="iamsuperheroSecret"
+const jwt = require("jsonwebtoken")
 Router.get("/", (req,res)=>{
 res.render("register",{title:"fill form",password:"",email:""})})
 
 Router.post("/signup",async(req,res)=>{
-try{
-    const {
-        uname,
-        email,
-        password,
-        cpassword
-    }=req.body;
-    if(password===cpassword){
-       const  userData = new HomeSchema({
-        uname,
-        email,
-        password,
-       })
-       userData.save( err=>{
-        if(err){
-            console.log(err)
-        }else{
+    try{
+            const {
+                uname,
+                email,
+                password,
+                cpassword
+            }=req.body;
+            
+            const useremail =await HomeSchema.findOne({email:email})
+                //    if(email===useremail.email){
+                    if(useremail){
+                       res.render("register",{title:"",password:"",email:"USer exists"})
+                   }
+                   else{
+                    if(password===cpassword){
+                               const  userData = new HomeSchema({
+                                uname,
+                                email,
+                                password,
+                               })
+                               userData.save( err=>{
+                                if(err){
+                                    console.log(err)
+                                }else{
+                            
+                                    res.render("register",{title:"Done",password:"",email:""});
+                        
+                                }
+                               })
+                   }
+    }}
+catch(e){
+    console.log(e)
+}})
+// try{
+//     const {
+//         uname,
+//         email,
+//         password,
+//         cpassword
+//     }=req.body;
+//     if(password===cpassword){
+//        const  userData = new HomeSchema({
+//         uname,
+//         email,
+//         password,
+//        })
+//        userData.save( err=>{
+//         if(err){
+//             console.log(err)
+//         }else{
     
-            res.render("register",{title:"Done",password:"",email:""});
+//             res.render("register",{title:"Done",password:"",email:""});
 
-        }
-       })
+//         }
+//        })
 
-const useremail = HomeSchema.findOne({email:email})
-if(email===useremail.email){
-    res.render("register",{title:"",password:"",email:"USer exists"})
-}
-else{
-     const data = {
-                from: 'iam <no-reply@hello.com>',
-                to: email,
-                subject: 'Hello',
-                text: 'Testing some Mailgun awesomness!'
-            };
-            mg.messages().send(data, function (error, body) {
-                console.log(body);
-            });
-    
-}
 
-    }
-    else{
-        res.render("register",{title:"",password:"password not matching",email:""})
-    }
+//        const useremail =await HomeSchema.findOne({email:email})
+//        if(email===useremail.email){
+//            res.render("register",{title:"",password:"",email:"USer exists"})
+//        }
+//        else{
+//            console.log("error")
+//        }
 
-}catch(error){
-    res.render("register",{title:"Error in code",password:"",email:""})
+//     }
+//     else{
+//         res.render("register",{title:"",password:"password not matching",email:""})
+//     }
+
+// }catch(error){
+//     res.render("register",{title:"Error in code",password:"",email:""})
     
 
-}});
+
 
 Router.post("/login", (req,res)=>{
+    console.log(req.body)
     const {
         email,
         password
     }= req.body;
 
-    HomeSchema.findOne({email:email},(err,result)=>{
-       if(email===result.email && password===result.password){
-        res.render("user",{ name: result.uname})
+    HomeSchema.findOne({email:req.body.email},(err,result)=>{
+        console.log(result)
+        console.log(result.email)
+       if(req.body.email===result.email && req.body.password===result.password){
+        res.render("user",{ name:result.uname , email:result.email})
        }
        else{
         console.log(err);
@@ -85,18 +115,28 @@ Router.post("/login", (req,res)=>{
     })
 })
 
-
 Router.post("/login/user",async(req,res)=>{
     try{
-       const nickname = nickname.req.body;
-        const  userData1 = new HomeSchema({
-           nickname
-    })
-    userData1.save((req,res)=>{
-        
-            res.render("user");
-        }
-       )
+        const nickname = req.body.nickname;
+        HomeSchema.updateOne({email:req.body.email},{
+            $set:{"nickname":nickname}
+                 
+        })
+        .then(()=>{
+            res.render("nickname")
+        })
+       
+    //     const  userData1 = new HomeSchema({
+    //         uname,
+    //         email,
+    //         nickname,
+    //         pass
+    // })
+    // userData1.save().then(()=>{
+
+    //         res.render("user");
+    //     }
+    //    );
 
 }catch(error){
     console.log("error");
@@ -104,6 +144,96 @@ Router.post("/login/user",async(req,res)=>{
 }
 )
 
+
+
+
+
+
+
+
+Router.get("/password" ,(req,res,next)=>{
+    res.render("resetpassword")
+})
+
+Router.post("/password", async(req,res,next)=>{
+    const uemail =req.body.email;
+    
+const user = await HomeSchema.findOne({email:uemail})
+    console.log(user);
+    emailn = user.email;
+   console.log(emailn);
+ 
+// {email:email}
+
+// const user.password = HomeSchema.findOne({password:user.password})
+// const user._id= HomeSchema.findOne({_id:user._id})
+    if(user.email !== uemail){
+        res.send("user not registered");
+        return;
+    }
+    const secret =JWT_SECRET+user.password;
+    const payload={
+        email: user.email,
+        id: user._id
+    }
+    const email = user.email
+    const token =jwt.sign(payload,secret,{expiresIn:"15m"})
+    const host ="http://localhost:8080/password/"
+ const tokenlink = host.concat(token)
+ const tokenlink1 = tokenlink+"/";
+  const finaltoken =  tokenlink1.concat(email)
+    
+    console.log(finaltoken);
+    res.send("password rest link has been sent")
+})
+
+Router.get("/password/:token/:email",async (req,res,next)=>{
+    const{email ,token}=req.params;
+    // res.send(req.params);
+    const user = await HomeSchema.findOne({email:email})
+    if(!user){
+        res.send("invalid user")
+        return
+    }
+    
+        const secret = JWT_SECRET+user.password
+        try{
+            const payload= jwt.verify(token,secret)
+            res.render("resetyourpassword",{email:email})
+
+        }catch(e){
+            console.log(e);
+        }
+    
+})
+
+Router.post("/password/:token/:email", async(req,res,next)=>{
+    const{email,token}=req.params;
+    const user = await HomeSchema.findOne({email:email})
+
+    const{password1,password2}=req.body
+  if(email!==user.email){
+    res.send("invalid user")
+  }
+
+  const secret = JWT_SECRET+user.password
+  try{
+    const payload=jwt.verify(token,secret)
+let password1 = req.body.password1;
+var where = {email:user.email};
+var update = { $set:{password:password1}};
+
+    
+    HomeSchema.updateOne(where,update ,function(err,res){
+       
+    })
+ 
+    
+
+  }catch(e){
+    console.log(e.message)
+res.send(e.message)  }
+})
 
 
 

@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const homeRouter = require("./routers/homeRouter");
 const mongodb = require("mongodb")
+const ejs = require('ejs')
 const port = process.env.port || 8080 ;
 
 const DB = "mongodb+srv://shankarjatin:jaiHanumanji@cluster0.b1no4tl.mongodb.net/userData2?retryWrites=true&w=majority";
