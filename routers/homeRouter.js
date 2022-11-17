@@ -8,13 +8,36 @@ const crypto = require("crypto");
 // const sendEmail = require("../utils/sendEmail");
 const Joi = require("joi");
 const passwordComplexity = require("joi-password-complexity");
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 const mailgun = require("mailgun-js");
 const bodyParser = require("body-parser");
 const DOMAIN = 'sandboxf5f766617900462a9ccd109ead7478d2.mailgun.org';
 const mg = mailgun({apiKey: "7e35b47bab804aaee3ad19a962c5a811-48c092ba-71d0e176", domain: DOMAIN });
 const JWT_SECRET ="iamsuperheroSecret"
 const jwt = require("jsonwebtoken")
+const nodemailer = require("nodemailer");
+const { stringify } = require("querystring");
+const { link } = require("joi");
+const transporter = nodemailer.createTransport({
+    service:"hotmail",
+    auth :{
+        user: "shankarjatin1005@outlook.com",
+        pass: "Jatin@1003"
+    }
+})
+
+const options ={
+    from: "shankarjatin1005@outlook.com",
+    to: "ghostcoder16790@gmail.com",
+    subject: "Sending enail with node.js!",
+    text: "wow! That's simple!"
+    };
+
+
+
+
+
+
 Router.get("/", (req,res)=>{
 res.render("register",{title:"fill form",password:"",email:""})})
 
@@ -43,9 +66,22 @@ Router.post("/signup",async(req,res)=>{
                                 if(err){
                                     console.log(err)
                                 }else{
+                                    // const options ={
+                                    //     from: "shankarjatin1005@outlook.com",
+                                    //     to: useremail.email ,
+                                    //     subject: "Sending enail with node.js!",
+                                    //    html:'<h1>YOu have been Registered</h1><br><p>Welcome !</p>'
+                                    
+                                    //     };
+                                      
+                                    //         transporter.sendMail(options,  (err, info)=> {
+                                    //             if(err){
+                                    //             console.log(err);
+                                    //             return;
+                                    //             }
+                                    //             console.log("Sent: " + info.response);
+                                    //             })
                             
-                                    res.render("register",{title:"Done",password:"",email:""});
-                        
                                 }
                                })
                    }
@@ -173,7 +209,7 @@ const user = await HomeSchema.findOne({email:uemail})
     }
     const secret =JWT_SECRET+user.password;
     const payload={
-        email: user.email,
+        emailn: user.email,
         id: user._id
     }
     const email = user.email
@@ -182,7 +218,23 @@ const user = await HomeSchema.findOne({email:uemail})
  const tokenlink = host.concat(token)
  const tokenlink1 = tokenlink+"/";
   const finaltoken =  tokenlink1.concat(email)
-    
+    const finaltoken1 = stringify(finaltoken);
+    var referralTokenValue =  tokenlink1.concat(email)
+const options ={
+    from: "shankarjatin1005@outlook.com",
+    to: user.email ,
+    subject: "Sending enail with node.js!",
+   html:'<p> Link to <a href="' + finaltoken + '">here</a></p> '
+    };
+
+    transporter.sendMail(options,  (err, info)=> {
+        if(err){
+        console.log(err);
+        return;
+        }
+        console.log("Sent: " + info.response);
+        })
+
     console.log(finaltoken);
     res.send("password rest link has been sent")
 })
