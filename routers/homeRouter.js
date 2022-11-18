@@ -18,6 +18,9 @@ const jwt = require("jsonwebtoken")
 const nodemailer = require("nodemailer");
 const { stringify } = require("querystring");
 const { link } = require("joi");
+
+// nodemailer authentication
+
 const transporter = nodemailer.createTransport({
     service:"hotmail",
     auth :{
@@ -26,20 +29,15 @@ const transporter = nodemailer.createTransport({
     }
 })
 
-const options ={
-    from: "shankarjatin1005@outlook.com",
-    to: "ghostcoder16790@gmail.com",
-    subject: "Sending enail with node.js!",
-    text: "wow! That's simple!"
-    };
 
-
-
-
-
+// home Router
 
 Router.get("/", (req,res)=>{
 res.render("register",{title:"fill form",password:"",email:""})})
+
+
+
+// signup router
 
 Router.post("/signup",async(req,res)=>{
     try{
@@ -66,22 +64,23 @@ Router.post("/signup",async(req,res)=>{
                                 if(err){
                                     console.log(err)
                                 }else{
-                                    // const options ={
-                                    //     from: "shankarjatin1005@outlook.com",
-                                    //     to: useremail.email ,
-                                    //     subject: "Sending enail with node.js!",
-                                    //    html:'<h1>YOu have been Registered</h1><br><p>Welcome !</p>'
+                                    const useremail = HomeSchema.findOne({email:email})
+                                    const options1 ={
+                                        from: "shankarjatin1005@outlook.com",
+                                        to: req.body.email,
+                                        subject: "Sign-up Notification!",
+                                       html:'<h1>You have been Registered</h1><br><h1>Welcome !</h1>'
                                     
-                                    //     };
+                                        };
                                       
-                                    //         transporter.sendMail(options,  (err, info)=> {
-                                    //             if(err){
-                                    //             console.log(err);
-                                    //             return;
-                                    //             }
-                                    //             console.log("Sent: " + info.response);
-                                    //             })
-                            
+                                            transporter.sendMail(options1,  (err, info)=> {
+                                                if(err){
+                                                console.log(err);
+                                                return;
+                                                }
+                                                console.log("Sent: " + info.response);
+                                                })
+                     res.render("register",{title:"User Added",password:"",email:""});
                                 }
                                })
                    }
@@ -89,48 +88,9 @@ Router.post("/signup",async(req,res)=>{
 catch(e){
     console.log(e)
 }})
-// try{
-//     const {
-//         uname,
-//         email,
-//         password,
-//         cpassword
-//     }=req.body;
-//     if(password===cpassword){
-//        const  userData = new HomeSchema({
-//         uname,
-//         email,
-//         password,
-//        })
-//        userData.save( err=>{
-//         if(err){
-//             console.log(err)
-//         }else{
-    
-//             res.render("register",{title:"Done",password:"",email:""});
-
-//         }
-//        })
 
 
-//        const useremail =await HomeSchema.findOne({email:email})
-//        if(email===useremail.email){
-//            res.render("register",{title:"",password:"",email:"USer exists"})
-//        }
-//        else{
-//            console.log("error")
-//        }
-
-//     }
-//     else{
-//         res.render("register",{title:"",password:"password not matching",email:""})
-//     }
-
-// }catch(error){
-//     res.render("register",{title:"Error in code",password:"",email:""})
-    
-
-
+// login router
 
 Router.post("/login", (req,res)=>{
     console.log(req.body)
@@ -151,6 +111,8 @@ Router.post("/login", (req,res)=>{
     })
 })
 
+// user dashboard
+
 Router.post("/login/user",async(req,res)=>{
     try{
         const nickname = req.body.nickname;
@@ -162,17 +124,6 @@ Router.post("/login/user",async(req,res)=>{
             res.render("nickname")
         })
        
-    //     const  userData1 = new HomeSchema({
-    //         uname,
-    //         email,
-    //         nickname,
-    //         pass
-    // })
-    // userData1.save().then(()=>{
-
-    //         res.render("user");
-    //     }
-    //    );
 
 }catch(error){
     console.log("error");
@@ -184,7 +135,7 @@ Router.post("/login/user",async(req,res)=>{
 
 
 
-
+// password reset 
 
 
 Router.get("/password" ,(req,res,next)=>{
@@ -199,10 +150,7 @@ const user = await HomeSchema.findOne({email:uemail})
     emailn = user.email;
    console.log(emailn);
  
-// {email:email}
 
-// const user.password = HomeSchema.findOne({password:user.password})
-// const user._id= HomeSchema.findOne({_id:user._id})
     if(user.email !== uemail){
         res.send("user not registered");
         return;
