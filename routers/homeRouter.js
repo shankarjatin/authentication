@@ -171,8 +171,8 @@ const user = await HomeSchema.findOne({email:uemail})
 const options ={
     from: "shankarjatin1005@outlook.com",
     to: user.email ,
-    subject: "Sending enail with node.js!",
-   html:'<p> Link to <a href="' + finaltoken + '">here</a></p> '
+    subject: "Reset password",
+   html:'<p> TO resset click<a href="' + finaltoken + '">here</a></p> '
     };
 
     transporter.sendMail(options,  (err, info)=> {
@@ -224,11 +224,12 @@ var where = {email:user.email};
 var update = { $set:{password:password1}};
 
     
-    HomeSchema.updateOne(where,update ,function(err,res){
+    HomeSchema.updateOne(where,update ,function(err,res)
+   {
        
     })
  
-    
+    res.render("paswordre");
 
   }catch(e){
     console.log(e.message)
