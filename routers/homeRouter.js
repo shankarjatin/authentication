@@ -50,7 +50,7 @@ Router.post("/signup",async(req,res)=>{
             
             const useremail =await HomeSchema.findOne({email:email})
                 //    if(email===useremail.email){
-                    if(useremail){
+                    if(useremail){ 
                        res.render("register",{title:"",password:"",email:"USer exists"})
                    }
                    else{
@@ -226,9 +226,10 @@ var update = { $set:{password:password1}};
     
     HomeSchema.updateOne(where,update ,function(err,res)
    {
-    res.render("paswordre"); 
+    
+    }).then(()=>{
+        res.render("passwordre");
     })
- 
     
 
   }catch(e){
