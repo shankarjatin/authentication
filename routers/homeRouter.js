@@ -232,8 +232,10 @@ var update = { $set:{password:password1}};
     res.render("paswordre");
 
   }catch(e){
-    console.log(e.message)
-res.send(e.message)  }
+    res.render("paswordre");
+//   console.log(e.message)
+// res.send(e.message)  }
+  }
 })
 
 
