@@ -162,7 +162,7 @@ const user = await HomeSchema.findOne({email:uemail})
     }
     const email = user.email
     const token =jwt.sign(payload,secret,{expiresIn:"15m"})
-    const host ="http://localhost:8080/password/"
+    const host ="https://user-authentication-jatin.herokuapp.com/password/"
  const tokenlink = host.concat(token)
  const tokenlink1 = tokenlink+"/";
   const finaltoken =  tokenlink1.concat(email)
