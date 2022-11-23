@@ -226,16 +226,16 @@ var update = { $set:{password:password1}};
     
     HomeSchema.updateOne(where,update ,function(err,res)
    {
-       
+    res.render("paswordre"); 
     })
  
-    res.render("paswordre");
+    
 
   }catch(e){
-    res.render("paswordre");
-//   console.log(e.message)
-// res.send(e.message)  }
-  }
+    
+  console.log(e.message)
+res.send(e.message)  }
+  
 })
 
 
