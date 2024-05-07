@@ -162,7 +162,7 @@ const user = await HomeSchema.findOne({email:uemail})
     }
     const email = user.email
     const token =jwt.sign(payload,secret,{expiresIn:"15m"})
-    const host ="https://authentication-system-zpvf.onrender.com/password/"
+    const host = process.env.host
  const tokenlink = host.concat(token)
  const tokenlink1 = tokenlink+"/";
   const finaltoken =  tokenlink1.concat(email)
@@ -224,16 +224,12 @@ var where = {email:user.email};
 var update = { $set:{password:password1}};
 
     
-    HomeSchema.updateOne(where,update ,function(err,res)
-   {
+await HomeSchema.updateOne(where,update)
+    res.render("passwordre");
     
-    }).then(()=>{
-        res.render("passwordre");
-    })
     
 
   }catch(e){
-    
   console.log(e.message)
 res.send(e.message)  }
   
