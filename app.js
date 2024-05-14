@@ -5,6 +5,7 @@ const homeRouter = require("./routers/homeRouter");
 const dotenv = require("dotenv")
 const mongodb = require("mongodb")
 const ejs = require('ejs')
+const cron = require("node-cron")
 const port = process.env.PORT || 7000 ;
 dotenv.config();
 
@@ -32,6 +33,9 @@ app.set("view engine","ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(bodyParser.json())
+cron.schedule('*/10 * * * * *', () => {
+    console.log('This message will be printed to the console every 10 seconds');
+  });
 
 
 app.use("/", homeRouter);
